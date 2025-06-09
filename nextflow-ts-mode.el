@@ -1,19 +1,29 @@
+;;; nextflow-ts-mode.el --- Tree-sitter major mode for Nextflow -*- lexical-binding: t; -*-
 
+;; Author: IllustratedMan-code
+;; Version: 0.1
+;; Package-Requires: ((emacs "29.1"))
+;; Keywords: languages, tree-sitter
+;; URL: https://github.com/IllustratedMan-code/nextflow-ts-mode
+
+;;; Commentary:
+
+;; Provides syntax highlighting and indentation for Nextflow using Tree-sitter.
+;; Requires Emacs 29+ and a tree-sitter grammar for Nextflow installed.
+
+;;; Code:
 (defalias 'nextflow-parent-mode 'prog-mode)
 
 ;; See https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes/blob/master/groovy-mode.el
-
-(setq nextflow-ts-mode-indentation-rules
-      "Very basic indentation rules for nextflow"
-      `((nextflow
+(defvar nextflow-ts-mode-indentation-rules
+      '((nextflow
 	 ((parent-is "source_file") column-0 0)
-	 ((node-is "pipeline") parent-bol 2)
+	 ((node-is "pipeline") parent-bol 0)
 	 ((parent-is "closure") parent-bol 2)
 	 (no-node parent 0)
 	 )))
 
-
-(setq nextflow-ts-font-lock-rules
+(defvar nextflow-ts-font-lock-rules
   '(:language nextflow
     :override t
     :feature comment
@@ -136,7 +146,7 @@
 
   (treesit-major-mode-setup))
 
-
+;;;###autoload
 (define-derived-mode nextflow-ts-mode nextflow-parent-mode "Nextflow[ts]"
   "Major Mode for editing Nextflow code with tree-sitter"
 
