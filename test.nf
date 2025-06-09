@@ -15,7 +15,7 @@ def f(int x) {
   return 1 + x + y // highlight parameters
 }
 
-g = { x -> x * 2 } // closure
+g = { x -> y + x * 2 } // closure
 
 @annotation /* annotation */
 static class C {
@@ -29,7 +29,8 @@ pipeline {
         sh "hello world ${with_interpolation}"
         sh """\n \t \u1234 escape sequences
           ${multiline.string} with interpolation """
-        sh '''${multiline.string} without interpolation\t
+        sh '''
+	hello ${multiline.string} without interpolation\t
           '''
         sh(/slashy string/)
         sh($/dollar slashy string/$)

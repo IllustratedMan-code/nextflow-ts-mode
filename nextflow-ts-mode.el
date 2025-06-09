@@ -2,6 +2,17 @@
 (defalias 'nextflow-parent-mode 'prog-mode)
 
 ;; See https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes/blob/master/groovy-mode.el
+
+(setq nextflow-ts-mode-indentation-rules
+      "Very basic indentation rules for nextflow"
+      `((nextflow
+	 ((parent-is "source_file") column-0 0)
+	 ((node-is "pipeline") parent-bol 2)
+	 ((parent-is "closure") parent-bol 2)
+	 (no-node parent 0)
+	 )))
+
+
 (setq nextflow-ts-font-lock-rules
   '(:language nextflow
     :override t
@@ -14,6 +25,7 @@
     :override t
     :feature docs
     ([
+      (groovy_doc "/**" (first_line) @default)
       (groovy_doc_param "@param" @font-lock-doc-markup-face (identifier) @font-lock-variable-name-face) 
       (groovy_doc_throws "@throws" @font-lock-doc-markup-face (identifier) @font-lock-type-face)
       ])
@@ -30,6 +42,10 @@
       (return "return" @font-lock-keyword-face)
       (modifier) @font-lock-keyword-face
       (access_modifier) @font-lock-keyword-face
+      (switch_statement "switch" @font-lock-keyword-face)
+      (case "case" @font-lock-keyword-face)
+      (case "default" @font-lock-keyword-face)
+      (break) @font-lock-keyword-face
       ])
 
     :language nextflow
@@ -46,6 +62,9 @@
     :feature literal
     ([
       (number_literal) @font-lock-number-face
+      (string) @font-lock-string-face
+      (escape_sequence) @font-lock-escape-face
+      (boolean_literal) @font-lock-constant-face
       ])
 
     :language nextflow
@@ -54,6 +73,8 @@
     ([
       (declaration name: (identifier) @font-lock-variable-name-face)
       (parameter_list (parameter name: (identifier) @font-lock-variable-name-face))
+      (closure "->" @font-lock-keyword-face)
+      (map_item key: (identifier) @font-lock-variable-use-face)
       ])
 
     :language nextflow
@@ -65,6 +86,7 @@
        )
       (assignment (identifier) @font-lock-function-name-face (closure "->" @font-lock-keyword-face))
       (closure "->" @font-lock-keyword-face)
+      (function_call function: (identifier) @font-lock-function-call-face)
       ])
 
     :language nextflow
@@ -75,7 +97,23 @@
       (class_definition "class" @font-lock-keyword-face name: (identifier) @font-lock-type-face)
 
       ])
-
+    :language nextflow
+    :override t
+    :feature pipeline
+    ([
+      (pipeline "pipeline" @font-lock-keyword-face)
+      (juxt_function_call  function: (identifier) @font-lock-function-call-face)
+      (interpolation
+       "$" @font-lock-escape-face
+       "{" @font-lock-bracket-face
+       "}" @font-lock-bracket-face) @font-lock-variable-use-face
+      ])
+    
+    :language nextflow
+    :feature identifier
+    ([
+      (identifier) @font-lock-variable-use-face
+      ])
     ))
 
 
@@ -90,8 +128,10 @@
 
   (setq-local treesit-font-lock-feature-list
 	      '((comment docs)
-		(type keyword literal variable function class)
-		  ))
+		(variable type keyword literal  function class pipeline)
+		(identifier)
+		))
+  (setq-local treesit-simple-indent-rules nextflow-ts-mode-indentation-rules)
 
 
   (treesit-major-mode-setup))

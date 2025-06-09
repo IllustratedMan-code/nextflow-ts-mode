@@ -1,0 +1,5 @@
+* Nextflow Treesitter mode for emacs
+
+A major mode that provides syntax highlighting and
+indentation support for Nextflow pipelines.
+
