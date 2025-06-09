@@ -7,15 +7,15 @@
     :override t
     :feature comment
     ([(comment) @font-lock-comment-face
-      (groovy_doc) @font-lock-comment-face
+      (groovy_doc) @font-lock-doc-face
       ])
 
     :language nextflow
     :override t
     :feature docs
     ([
-      (groovy_doc_param "@param" @font-lock-keyword-face) 
-      (groovy_doc_throws "@throws" @font-lock-keyword-face)
+      (groovy_doc_param "@param" @font-lock-doc-markup-face (identifier) @font-lock-variable-name-face) 
+      (groovy_doc_throws "@throws" @font-lock-doc-markup-face (identifier) @font-lock-type-face)
       ])
 
     :language nextflow
@@ -26,6 +26,10 @@
        (identifier))
       (groovy_import "import" @font-lock-keyword-face)
       (declaration "def" @font-lock-keyword-face)
+      (function_definition type: "def" @font-lock-keyword-face)
+      (return "return" @font-lock-keyword-face)
+      (modifier) @font-lock-keyword-face
+      (access_modifier) @font-lock-keyword-face
       ])
 
     :language nextflow
@@ -34,6 +38,7 @@
     ([
       (declaration type: (identifier) @font-lock-type-face)
       (declaration type: (builtintype) @font-lock-type-face)
+      (builtintype) @font-lock-builtin-face
       ])
 
     :language nextflow
@@ -41,6 +46,34 @@
     :feature literal
     ([
       (number_literal) @font-lock-number-face
+      ])
+
+    :language nextflow
+    :override t
+    :feature variable
+    ([
+      (declaration name: (identifier) @font-lock-variable-name-face)
+      (parameter_list (parameter name: (identifier) @font-lock-variable-name-face))
+      ])
+
+    :language nextflow
+    :override t
+    :feature function
+    ([
+      (function_definition
+       function: (identifier) @font-lock-function-name-face
+       )
+      (assignment (identifier) @font-lock-function-name-face (closure "->" @font-lock-keyword-face))
+      (closure "->" @font-lock-keyword-face)
+      ])
+
+    :language nextflow
+    :override t
+    :feature class
+    ([
+      (annotation) @font-lock-constant-face
+      (class_definition "class" @font-lock-keyword-face name: (identifier) @font-lock-type-face)
+
       ])
 
     ))
@@ -57,7 +90,7 @@
 
   (setq-local treesit-font-lock-feature-list
 	      '((comment docs)
-		(type keyword literal)
+		(type keyword literal variable function class)
 		  ))
 
 
@@ -82,3 +115,5 @@
   (interactive)
   (kill-all-local-variables)
   (nextflow-ts-mode))
+
+(provide 'nextflow-ts-mode)
