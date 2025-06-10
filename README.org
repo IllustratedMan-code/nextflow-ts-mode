@@ -3,6 +3,9 @@
 A major mode that provides syntax highlighting and
 indentation support for Nextflow pipelines.
 
+** Install nextflow grammar
+You can evaluate the [[./download-treesitter.el]] file in this repo to install the nextflow-treesitter grammar
+
 
 ** Download and install
 
@@ -21,6 +24,8 @@ To install this major mode, you can do something like this after cloning the rep
 (require 'nextflow-ts-mode)
 (add-to-list 'auto-mode-alist '("\\.nf\\'" . nextflow-ts-mode))
 #+end_src
+
+
 
 
 ** Example of highlighting
