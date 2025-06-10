@@ -18,14 +18,15 @@
 (defvar nextflow-ts-mode-indentation-rules
       '((nextflow
 	 ((parent-is "source_file") column-0 0)
-	 ((node-is "pipeline") parent-bol 0)
+	 ((parent-is "pipeline") parent-bol 2)
 	 ((parent-is "closure") parent-bol 2)
+	 ((parent-is "process") parent-bol 2)
+	 ((parent-is "workflow") parent-bol 2)
 	 (no-node parent 0)
 	 )))
 
 (defvar nextflow-ts-font-lock-rules
   '(:language nextflow
-    :override t
     :feature comment
     ([(comment) @font-lock-comment-face
       (groovy_doc) @font-lock-doc-face
@@ -45,7 +46,7 @@
     :feature keyword
     ([(groovy_package
        "package" @font-lock-keyword-face
-       (identifier))
+       )
       (groovy_import "import" @font-lock-keyword-face)
       (declaration "def" @font-lock-keyword-face)
       (function_definition type: "def" @font-lock-keyword-face)
@@ -56,6 +57,11 @@
       (case "case" @font-lock-keyword-face)
       (case "default" @font-lock-keyword-face)
       (break) @font-lock-keyword-face
+      (process "process" @font-lock-keyword-face)
+      (workflow "workflow" @font-lock-keyword-face)
+      (input_block "input:" @font-lock-keyword-face)
+      (output_block "output:" @font-lock-keyword-face)
+      (script "script:" @font-lock-keyword-face)
       ])
 
     :language nextflow
@@ -97,6 +103,7 @@
       (assignment (identifier) @font-lock-function-name-face (closure "->" @font-lock-keyword-face))
       (closure "->" @font-lock-keyword-face)
       (function_call function: (identifier) @font-lock-function-call-face)
+      (juxt_function_call function: (identifier) @font-lock-function-call-face)
       ])
 
     :language nextflow
@@ -137,9 +144,10 @@
                     nextflow-ts-font-lock-rules))
 
   (setq-local treesit-font-lock-feature-list
-	      '((comment docs)
+	      '(
+		(docs comment)
 		(variable type keyword literal  function class pipeline)
-		(identifier)
+		;; (identifier)
 		))
   (setq-local treesit-simple-indent-rules nextflow-ts-mode-indentation-rules)
 

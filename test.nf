@@ -20,33 +20,26 @@ g = { x -> y + x * 2 } // closure
 @annotation /* annotation */
 static class C {
   public static int x = 1
+  }
+
+process myprocess {
+  publishDir "results/lower"
+
+  input:
+  val x
+
+  output:
+  path "chunk"
+
+  script:
+  """
+  printf '${x}' | split
+  """
+
+
 }
 
-pipeline {
-  stages {
-    stage("jenkins pipeline") {
-      steps {
-        sh "hello world ${with_interpolation}"
-        sh """\n \t \u1234 escape sequences
-          ${multiline.string} with interpolation """
-        sh '''
-	hello ${multiline.string} without interpolation\t
-          '''
-        sh(/slashy string/)
-        sh($/dollar slashy string/$)
-        checkout([repo_name: "hello world", clone_depth: 20])
-        mapFunc(param1: val, param2: 4)
-        sendTrackingEvents(arg1, 3 + 4 * 7, false)
-        script {
-          switch (x) {
-            case 1:
-              println("1")
-              break
-            default:
-              println("default")
-          }
-        }
-      }
-    }
-  }
+workflow {
+
 }
+
