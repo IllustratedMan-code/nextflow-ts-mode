@@ -22,6 +22,7 @@ static class C {
   public static int x = 1
   }
 
+
 process myprocess {
   publishDir "results/lower"
 
@@ -35,9 +36,8 @@ process myprocess {
   """
   printf '${x}' | split
   """
+  }
 
-
-}
 
 workflow {
 

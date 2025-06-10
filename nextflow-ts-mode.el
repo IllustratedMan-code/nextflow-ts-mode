@@ -25,6 +25,10 @@
 	 (no-node parent 0)
 	 )))
 
+;; TODO write syntax injection
+;; See treesit-range-settings
+
+
 (defvar nextflow-ts-font-lock-rules
   '(:language nextflow
     :feature comment
@@ -103,6 +107,7 @@
       (assignment (identifier) @font-lock-function-name-face (closure "->" @font-lock-keyword-face))
       (closure "->" @font-lock-keyword-face)
       (function_call function: (identifier) @font-lock-function-call-face)
+      (function_call function: (dotted_identifier (identifier) @font-lock-function-call-face))
       (juxt_function_call function: (identifier) @font-lock-function-call-face)
       ])
 
@@ -114,23 +119,27 @@
       (class_definition "class" @font-lock-keyword-face name: (identifier) @font-lock-type-face)
 
       ])
+
     :language nextflow
-    :override t
-    :feature pipeline
-    ([
-      (pipeline "pipeline" @font-lock-keyword-face)
-      (juxt_function_call  function: (identifier) @font-lock-function-call-face)
-      (interpolation
-       "$" @font-lock-escape-face
-       "{" @font-lock-bracket-face
-       "}" @font-lock-bracket-face) @font-lock-variable-use-face
-      ])
-    
-    :language nextflow
+    :override keep
     :feature identifier
     ([
       (identifier) @font-lock-variable-use-face
       ])
+
+    :language nextflow
+    :override t
+    :feature string-interpolation
+    ([
+      (interpolation "$" @font-lock-escape-face)
+      ])
+
+    :language nextflow
+    :override t
+    :feature script
+    ([
+      (script_string "\"\"\"" @font-lock-string-face)
+       ])
     ))
 
 
@@ -145,9 +154,20 @@
 
   (setq-local treesit-font-lock-feature-list
 	      '(
+		;;(identifier)
 		(docs comment)
-		(variable type keyword literal  function class pipeline)
-		;; (identifier)
+		(ID
+		 variable
+		 type
+		 keyword
+		 literal
+		 function
+		 class
+		 string-interpolation
+		 identifier
+		 script
+		 ) ;;identifier)
+		;; (variable type keyword literal  function class pipeline)
 		))
   (setq-local treesit-simple-indent-rules nextflow-ts-mode-indentation-rules)
 

@@ -3,3 +3,26 @@
 A major mode that provides syntax highlighting and
 indentation support for Nextflow pipelines.
 
+
+** Download and install
+
+To install this major mode, you can do something like this after cloning the repository:
+
+#+begin_src emacs-lisp
+
+(add-to-list 'load-path "/path/to/nextflow-ts-mode/")
+
+(use-package nextflow-ts-mode
+  :mode "\\.nf\\'")
+
+;; or this
+
+(add-to-list 'load-path "/path/to/nextflow-ts-mode/")
+(require 'nextflow-ts-mode)
+(add-to-list 'auto-mode-alist '("\\.nf\\'" . nextflow-ts-mode))
+#+end_src
+
+
+** Example of highlighting
+
+[[./syntax-highlighting.png]]
